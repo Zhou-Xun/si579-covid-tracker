@@ -8,7 +8,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import InfoBox from "./components/InfoBox";
-import LineGraph from "./components/LineGraph";
+import SmallCharts from "./components/SmallCharts";
 import Table from "./components/Table";
 import { sortData, prettyPrintStat } from "./components/util";
 import numeral from "numeral";
@@ -37,7 +37,7 @@ const App = () => {
   }, [searchTerm])
 
   useEffect(() => {
-    fetch("https://disease.sh/v3/covid-19/all")
+      fetch("https://disease.sh/v3/covid-19/all")
       .then((response) => response.json())
       .then((data) => {
         setCountryInfo(data);
@@ -156,8 +156,7 @@ const App = () => {
           <div className="app__information">
             <h3>Live Cases by Country</h3>
             <Table countries={tableData} />
-            <h3>Worldwide new {casesType}</h3>
-            <LineGraph casesType={casesType} />
+            <SmallCharts casesType={casesType} />
           </div>
         </CardContent>
       </Card>
