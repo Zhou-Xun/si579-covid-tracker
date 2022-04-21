@@ -25,6 +25,17 @@ const App = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
   const [mapZoom, setMapZoom] = useState(3);
 
+  const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      console.log(searchTerm)
+      // Send Axios request here
+    }, 3000)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchTerm])
+
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
       .then((response) => response.json())
@@ -64,6 +75,7 @@ const App = () => {
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
+  
         setInputCountry(countryCode);
         setCountryInfo(data);
         setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
@@ -88,6 +100,24 @@ const App = () => {
               ))}
             </Select>
           </FormControl>
+
+          <input
+      autoFocus
+      type='text'
+      autoComplete='off'
+      className='live-search-field'
+      placeholder='Search here...'
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+
+
+          <input 
+              onChange={onCountryChange} placeholder="Country Name" list="opts"/>
+          <datalist id="opts">
+          {countries.map((country) => (
+                <option value={country.value}>{country.name}</option>
+              ))}
+          </datalist>
         </div>
         <div className="app__stats">
           <InfoBox
