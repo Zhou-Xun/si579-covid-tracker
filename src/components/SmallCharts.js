@@ -5,10 +5,10 @@ import numeral from "numeral";
 import "./pieStyle.css";
 
 const SmallCharts = (props) => {
-  const [newCaseWorldwide, setNewCaseWorldwide] = useState({});
-  const [pieData, setPieData] = useState([]);
+  const [newCaseWorldwide, setNewCaseWorldwide] = useState([]);
+  const [deathWw, setDeathWw] = useState([]);
 
-  const casesType = props.casesType;
+  const [pieData, setPieData] = useState([]);
 
   const styles = {
     pieContainer: {
@@ -100,7 +100,8 @@ const SmallCharts = (props) => {
   const buildWWData = (data, casesType) => {
     let chartData = [];
     let lastDataPoint;
-    for (let date in data.cases) {
+    console.log(data[casesType]);
+    for (let date in data[casesType]) {
       if (lastDataPoint) {
         let newDataPoint = {
           x: date,
@@ -113,7 +114,6 @@ const SmallCharts = (props) => {
     return chartData;
   };
 
-
   useEffect(() => {
       const fetchDataWW = async () => {
         await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=30")
@@ -121,8 +121,11 @@ const SmallCharts = (props) => {
               return response.json();
             })
             .then((data) => {
-              let chartData = buildWWData(data, casesType);
-              setNewCaseWorldwide(chartData);
+              console.log('lalalalalalsslldldslads');
+              console.log(props.casesType);
+              let chartDataCases = buildWWData(data, props.casesType);
+              console.log(chartDataCases);
+              setNewCaseWorldwide(chartDataCases);
             });
       };
 
@@ -138,22 +141,44 @@ const SmallCharts = (props) => {
 
       fetchDataWW();
       fetchDataUSA();
-    }, [casesType]);
+    }, [props.casesType]);
+
+  let lineColor = ""
+  let lineBackgroundColor = ""
+  if (props.casesType === 'cases') {
+    lineColor = "#666666"
+    lineBackgroundColor = "#CCCCCC"
+  } else if (props.casesType === 'recovered') {
+    lineColor = "#6699CC"
+    lineBackgroundColor = "#99CCFF"
+  } else {
+    lineColor = "#CC1034"
+    lineBackgroundColor = "#f95d6a"
+  }
 
   return (
       <div>
-          <h3>New worldwide {casesType} last month</h3>
+          <h3>Worldwide {props.casesType} last month</h3>
           <div style={styles.relative}>
             {newCaseWorldwide.length > 0 && (
                 <Line
                     data={{
                       datasets: [
                         {
-                          backgroundColor: "#CCCCCC",
-                          borderColor: "#666666",
+                          label: "New cases",
+                          backgroundColor: lineBackgroundColor,
+                          borderColor: lineColor,
                           data: newCaseWorldwide,
                         },
                       ],
+                    }}
+                    legend={{
+                      display: true,
+                      position: "bottom",
+                      labels: {
+                        fontColor: "#323130",
+                        fontSize: 14
+                      }
                     }}
                     options={WWOptions}
                 />
