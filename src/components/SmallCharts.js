@@ -159,7 +159,7 @@ const SmallCharts = (props) => {
                 />
             )}
           </div>
-          <h3>Hello CodeSandbox</h3>
+          <h3>Today in the United States</h3>
 
           <div style={styles.relative}>
             {/*<Doughnut data={test} options={doughnutOptions} />*/}

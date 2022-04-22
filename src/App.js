@@ -123,10 +123,10 @@ const App = () => {
           <InfoBox
             onClick={(e) => setCasesType("cases")}
             title="Coronavirus Cases"
-            isRed
             active={casesType === "cases"}
             cases={prettyPrintStat(countryInfo.todayCases)}
             total={numeral(countryInfo.cases).format("0.0a")}
+            color="grey"
           />
           <InfoBox
             onClick={(e) => setCasesType("recovered")}
@@ -134,14 +134,15 @@ const App = () => {
             active={casesType === "recovered"}
             cases={prettyPrintStat(countryInfo.todayRecovered)}
             total={numeral(countryInfo.recovered).format("0.0a")}
+            color={"blue"}
           />
           <InfoBox
             onClick={(e) => setCasesType("deaths")}
             title="Deaths"
-            isRed
             active={casesType === "deaths"}
             cases={prettyPrintStat(countryInfo.todayDeaths)}
             total={numeral(countryInfo.deaths).format("0.0a")}
+            color={"red"}
           />
         </div>
         <Map
