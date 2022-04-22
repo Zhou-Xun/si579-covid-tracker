@@ -14,10 +14,7 @@ const SmallCharts = (props) => {
     pieContainer: {
       width: "30%",
       height: "30%",
-      top: "50%",
-      left: "50%",
-      position: "absolute",
-      transform: "translate(-50%, -50%)"
+      position: "relative",
     },
     relative: {
       position: "relative"
@@ -75,7 +72,7 @@ const SmallCharts = (props) => {
       arc: {
         borderWidth: 0
       }
-    }
+    },
   };
 
   const pieUSAData = {
@@ -95,6 +92,9 @@ const SmallCharts = (props) => {
     setPieData(oldArray => [...oldArray, data.todayCases])
     setPieData(oldArray => [...oldArray, data.todayDeaths])
     setPieData(oldArray => [...oldArray, data.todayRecovered])
+    console.log('why');
+    console.log(data.todayCases);
+    console.log(pieData);
   }
 
   const buildWWData = (data, casesType) => {
@@ -115,33 +115,35 @@ const SmallCharts = (props) => {
   };
 
   useEffect(() => {
-      const fetchDataWW = async () => {
-        await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=30")
-            .then((response) => {
-              return response.json();
-            })
-            .then((data) => {
-              console.log('lalalalalalsslldldslads');
-              console.log(props.casesType);
-              let chartDataCases = buildWWData(data, props.casesType);
-              console.log(chartDataCases);
-              setNewCaseWorldwide(chartDataCases);
-            });
-      };
+    const fetchDataWW = async () => {
+      await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=30")
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let chartDataCases = buildWWData(data, props.casesType);
+            console.log(chartDataCases);
+            setNewCaseWorldwide(chartDataCases);
+          });
+    };
 
-      const fetchDataUSA = async () => {
-        await fetch("https://disease.sh/v3/covid-19/countries/usa")
-            .then((response) => {
-              return response.json();
-            })
-            .then((data) => {
-              buildUSAData(data);
-            });
-      };
+    fetchDataWW();
 
-      fetchDataWW();
-      fetchDataUSA();
-    }, [props.casesType]);
+  }, [props.casesType]);
+
+  useEffect(() => {
+    const fetchDataUSA = async () => {
+      await fetch("https://disease.sh/v3/covid-19/countries/usa")
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            buildUSAData(data);
+          });
+    };
+
+    fetchDataUSA();
+  }, [])
 
   let lineColor = ""
   let lineBackgroundColor = ""
@@ -158,46 +160,44 @@ const SmallCharts = (props) => {
 
   return (
       <div>
-          <h3>Worldwide {props.casesType} last month</h3>
-          <div style={styles.relative}>
-            {newCaseWorldwide.length > 0 && (
-                <Line
-                    data={{
-                      datasets: [
-                        {
-                          label: "New cases",
-                          backgroundColor: lineBackgroundColor,
-                          borderColor: lineColor,
-                          data: newCaseWorldwide,
-                        },
-                      ],
-                    }}
-                    legend={{
-                      display: true,
-                      position: "bottom",
-                      labels: {
-                        fontColor: "#323130",
-                        fontSize: 14
-                      }
-                    }}
-                    options={WWOptions}
-                />
-            )}
-          </div>
-          <h3>Today in the United States</h3>
-
-          <div style={styles.relative}>
-            {/*<Doughnut data={test} options={doughnutOptions} />*/}
-
-              <Pie
-                  data={pieUSAData}
-                  options={pieOptions}
+        <h3>Worldwide {props.casesType} last month</h3>
+        <div style={styles.relative}>
+          {newCaseWorldwide.length > 0 && (
+              <Line
+                  data={{
+                    datasets: [
+                      {
+                        label: "New cases",
+                        backgroundColor: lineBackgroundColor,
+                        borderColor: lineColor,
+                        data: newCaseWorldwide,
+                      },
+                    ],
+                  }}
+                  legend={{
+                    display: true,
+                    position: "bottom",
+                    labels: {
+                      fontColor: "#323130",
+                      fontSize: 14
+                    }
+                  }}
+                  options={WWOptions}
               />
+          )}
+        </div>
+        <h3>Today in the United States</h3>
 
+        <div style={styles.pieContainer}>
+          <Pie
+              data={pieUSAData}
+              options={pieOptions}
+          />
 
-          </div>
 
         </div>
+
+      </div>
   );
 
 };
