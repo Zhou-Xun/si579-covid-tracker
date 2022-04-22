@@ -130,7 +130,6 @@ const App = () => {
     <div className="app">
       <div className="app__left">
         <div className="app__header">
-
        
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -212,86 +211,8 @@ const App = () => {
       </Col>
   </Row>
   </Container>
-      
-        {/* </div>
-        <div className="app__stats">
-        {(() => {
-        if (casesType==='cases') {
-          return (
-            <InfoBox
-            onClick={(e) => setCasesType("cases")}
-            title="Coronavirus Cases"
-            active={casesType === "cases"}
-            cases={prettyPrintStat(countryInfo.todayCases)}
-            total={numeral(countryInfo.cases).format("0.0a")}
-            color="grey"
-          />
-          )
-        } else if (casesType==='recovered') {
-          return (
-            <InfoBox
-            onClick={(e) => setCasesType("recovered")}
-            title="Recovered"
-            active={casesType === "recovered"}
-            cases={prettyPrintStat(countryInfo.todayRecovered)}
-            total={numeral(countryInfo.recovered).format("0.0a")}
-            color={"blue"}
-          />
-          )
-        } else {
-          return (
-            <InfoBox
-            onClick={(e) => setCasesType("deaths")}
-            title="Deaths"
-            active={casesType === "deaths"}
-            cases={prettyPrintStat(countryInfo.todayDeaths)}
-            total={numeral(countryInfo.deaths).format("0.0a")}
-            color={"red"}
-          />
-          )
-        }
-      })()} */}
-          {/* if (casesType==='cases'){
-             <>
-          <InfoBox
-            onClick={(e) => setCasesType("cases")}
-            title="Coronavirus Cases"
-            active={casesType === "cases"}
-            cases={prettyPrintStat(countryInfo.todayCases)}
-            total={numeral(countryInfo.cases).format("0.0a")}
-            color="grey"
-          />
-          </>
-          
-}
-else{
-  <>
-          <InfoBox
-            onClick={(e) => setCasesType("recovered")}
-            title="Recovered"
-            active={casesType === "recovered"}
-            cases={prettyPrintStat(countryInfo.todayRecovered)}
-            total={numeral(countryInfo.recovered).format("0.0a")}
-            color={"blue"}
-          />
-          <InfoBox
-            onClick={(e) => setCasesType("deaths")}
-            title="Deaths"
-            active={casesType === "deaths"}
-            cases={prettyPrintStat(countryInfo.todayDeaths)}
-            total={numeral(countryInfo.deaths).format("0.0a")}
-            color={"red"}
-          />
-          </>
-} */}
-        </div>
-        {/* <Map
-          countries={mapCountries}
-          casesType={casesType}
-          center={mapCenter}
-          zoom={mapZoom}
-        /> */}
-      </div>
+  </div>
+</div>
       <Card className="app__right">
         <CardContent>
           <div className="app__information">
