@@ -9,11 +9,19 @@ import {
 } from "@material-ui/core";
 import InfoBox from "./components/InfoBox";
 import SmallCharts from "./components/SmallCharts";
-import Table from "./components/Table";
+import CTable from "./components/CTable";
 import { sortData, prettyPrintStat } from "./components/util";
 import numeral from "numeral";
 import Map from "./components/Map";
 import "leaflet/dist/leaflet.css";
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const App = () => {
   const [country, setInputCountry] = useState("worldwide");
@@ -29,7 +37,7 @@ const App = () => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      console.log(searchTerm)
+      // console.log(searchTerm)
       // Send Axios request here
     }, 3000)
 
@@ -63,10 +71,13 @@ const App = () => {
     getCountriesData();
   }, []);
 
-  console.log(casesType);
+  // console.log(casesType);
 
-  const onCountryChange = async (e) => {
-    const countryCode = e.target.value;
+  const onCountryChange_nav = async (key) => {
+    const countryCode = key;
+    console.log('country Code: ',key);
+    console.log('country Code type: ',typeof countryCode);
+    console.log(key==='worldwide');
 
     const url =
       countryCode === "worldwide"
@@ -75,6 +86,38 @@ const App = () => {
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
+
+        
+        setInputCountry(countryCode);
+        setCountryInfo(data);
+        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        setMapZoom(4);
+      }
+      );
+  };
+
+  const handleSelect=(key)=>{
+    
+    alert(`selected ${key}`);
+    
+    
+}
+
+
+
+  const onCountryChange = async (e) => {
+    const countryCode = e.target.value;
+    console.log('country Code: ',countryCode);
+    console.log('country Code type: ',typeof countryCode);
+
+    const url =
+      countryCode === "worldwide"
+        ? "https://disease.sh/v3/covid-19/all"
+        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
   
         setInputCountry(countryCode);
         setCountryInfo(data);
@@ -87,41 +130,46 @@ const App = () => {
     <div className="app">
       <div className="app__left">
         <div className="app__header">
-          <h1  className={`${casesType === "cases" && "grey_h1"} ${casesType === "recovered" && "blue_h1"}
-           ${casesType === "deaths" && "red_h1"}`}>COVID-19 Tracker</h1>
-          <FormControl className="app__dropdown">
-            <Select
-              variant="outlined"
-              value={country}
-              onChange={onCountryChange}
-            >
-              <MenuItem value="worldwide">Worldwide</MenuItem>
-              {countries.map((country) => (
-                <MenuItem value={country.value}>{country.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+       
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Container>
+      <Navbar.Brand href="#home">Covid-19 Data Visualization</Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
 
-          <input
-      autoFocus
-      type='text'
-      autoComplete='off'
-      className='live-search-field'
-      placeholder='Search here...'
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
+      <Nav variant="pills" activeKey="1"  
+                >
 
+          <NavDropdown title="Case Type" id="nav-dropdown" onSelect={(e) => setCasesType(e)}>
+                  
+                  
+                  <NavDropdown.Item eventKey='cases'>Coronavirus Cases</NavDropdown.Item>
+                  <NavDropdown.Item eventKey="recovered">Recovered</NavDropdown.Item>
+                  <NavDropdown.Item eventKey="deaths">Deaths</NavDropdown.Item>
+                
+                </NavDropdown>
+                
+                
+                <NavDropdown title="Country" id="nav-dropdown" onSelect={onCountryChange_nav}>
+         
+                    {countries.map((country) => (
+                    <NavDropdown.Item eventKey={country.value}>{country.name}</NavDropdown.Item>
+                  ))}
+                    
+                </NavDropdown>
+            </Nav>
 
-          <input 
-              onChange={onCountryChange} placeholder="Country Name" list="opts"/>
-          <datalist id="opts">
-          {countries.map((country) => (
-                <option value={country.value}>{country.name}</option>
-              ))}
-          </datalist>
-        </div>
-        <div className="app__stats">
-          <InfoBox
+            </Navbar.Collapse>
+      </Container>
+      </Navbar>
+      <Container>
+  <Row>
+    <Col><h3>Live Cases by Country</h3>
+            <CTable countries={tableData} /></Col>
+    <Col>{(() => {
+        if (casesType==='cases') {
+          return (
+            <InfoBox
             onClick={(e) => setCasesType("cases")}
             title="Coronavirus Cases"
             active={casesType === "cases"}
@@ -129,7 +177,10 @@ const App = () => {
             total={numeral(countryInfo.cases).format("0.0a")}
             color="grey"
           />
-          <InfoBox
+          )
+        } else if (casesType==='recovered') {
+          return (
+            <InfoBox
             onClick={(e) => setCasesType("recovered")}
             title="Recovered"
             active={casesType === "recovered"}
@@ -137,7 +188,10 @@ const App = () => {
             total={numeral(countryInfo.recovered).format("0.0a")}
             color={"blue"}
           />
-          <InfoBox
+          )
+        } else {
+          return (
+            <InfoBox
             onClick={(e) => setCasesType("deaths")}
             title="Deaths"
             active={casesType === "deaths"}
@@ -145,19 +199,25 @@ const App = () => {
             total={numeral(countryInfo.deaths).format("0.0a")}
             color={"red"}
           />
-        </div>
-        <Map
+          )
+        }
+      })()}
+      <Map
           countries={mapCountries}
           casesType={casesType}
           center={mapCenter}
           zoom={mapZoom}
         />
-      </div>
+      </Col>
+  </Row>
+  </Container>
+  </div>
+</div>
       <Card className="app__right">
         <CardContent>
           <div className="app__information">
-            <h3>Live Cases by Country</h3>
-            <Table countries={tableData} />
+            {/* <h3>Live Cases by Country</h3>
+            <CTable countries={tableData} /> */}
             <SmallCharts casesType={casesType} />
           </div>
         </CardContent>
