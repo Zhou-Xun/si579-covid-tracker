@@ -18,7 +18,7 @@
 }
 
 .info-name {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   color: #555;
 }
@@ -34,6 +34,7 @@
   border-radius: 8px;
 }
 
+.info-population,
 .info-confirmed,
 .info-recovered,
 .info-deaths {
